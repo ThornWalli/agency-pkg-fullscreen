@@ -1,0 +1,39 @@
+{
+  "name": "agency-pkg-fullscreen",
+  "version": "0.0.1",
+  "description": "agency - frontend package fullscreen",
+  "keywords": [
+    "boilerplate",
+    "package",
+    "fullscreen"
+  ],
+  "homepage": "https://github.com/StephanGerbeth/agency-pkg-fullscreen#readme",
+  "bugs": {
+    "url": "https://github.com/StephanGerbeth/agency-pkg-fullscreen/issues"
+  },
+  "license": "MIT",
+  "author": "Thorn Walli <lammpee@gmail.com>",
+  "contributors": [
+    {
+      "name": "Thorn Walli",
+      "email": "lammpee@gmail.com"
+    }
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThornWalli/agency-pkg-fullscreen.git"
+  },
+  "scripts": {
+    "install": "node ./install.js",
+    "heroku": "node node_modules/gulp/bin/gulp run --serverConfig=node_modules/agency-boilerplate/env/config/local.json --configTasks=./env/config/tasks.json --env=package-production --server=agency-server",
+    "dev": "node node_modules/gulp/bin/gulp run --serverConfig=node_modules/agency-boilerplate/env/config/local.json --configTasks=env/config/tasks.json --env=package-development --server=agency-server",
+    "prod": "node node_modules/gulp/bin/gulp run --serverConfig=node_modules/agency-boilerplate/env/config/local.json --configTasks=env/config/tasks.json --env=package-production --server=agency-server"
+  },
+  "dependencies": {
+    "agency-pkg-base": "git+https://git@github.com/StephanGerbeth/agency-pkg-base.git#feature/flat-files"
+  },
+  "devDependencies": {
+    "agency-boilerplate": "git+https://git@github.com/StephanGerbeth/agency-boilerplate.git#feature/flat-files"
+  }
+}
