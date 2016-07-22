@@ -51,8 +51,9 @@
       font-size: calc(20 / 16)rem;
       transform: translate(-50%, -50%);
       color: #fff;
-      display: block;
-
+      &.swipe {
+        display: block;
+      }
       &.native {
         display: none;
       }
@@ -60,7 +61,7 @@
         &.native {
           display: block;
         }
-        &.not-native {
+        &.swipe {
           display: none;
         }
       }
