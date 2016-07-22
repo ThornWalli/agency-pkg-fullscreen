@@ -18,6 +18,9 @@ module.exports = Controller.extend({
             }
         }
     }),
+    events: {
+        'click .clue': onClickClue
+    },
     timer: null,
     initialize: function() {
         Controller.prototype.initialize.apply(this, arguments);
@@ -30,24 +33,37 @@ module.exports = Controller.extend({
 
         this.model.on('change:locked', onChangeLocked.bind(this));
 
-        var cb = function() {
-            var scrollTop = $(window).scrollTop();
-            if (this.timer) {
-                global.clearTimeout(this.timer);
-            }
-            global.animationFrame.add(function() {
-                $(this.scrollPreventerEl).scrollTop(($(this.spacerEl).height()) / 3);
+        var cb;
+        if (hasNativeFullscreen()) {
+            this.htmlEl.classList.add('agency-pkg-fullscreen-native');
+            cb = function() {
+                this.model.locked = nativeFullscreenEnabled();
+            };
+            ['webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange', 'MSFullscreenChange'].forEach(function(name) {
+                this.contentEl.addEventListener(name, cb.bind(this));
             }.bind(this));
-            this.timer = setTimeout(function() {
-                if (((scrollTop > 0 && this.model.locked === false) || this.model.locked === true) && $(global).height() !== $(this.checkEl).height()) {
-                    this.model.locked = true;
-                } else {
-                    this.model.locked = false;
+
+        } else {
+            cb = function() {
+                var scrollTop = $(window).scrollTop();
+                if (this.timer) {
+                    global.clearTimeout(this.timer);
                 }
-            }.bind(this), 50);
-        }.bind(this);
-        viewport.callbacks.SCROLL.push(cb);
-        viewport.callbacks.RESIZE.push(cb);
+                global.animationFrame.add(function() {
+                    $(this.scrollPreventerEl).scrollTop(($(this.spacerEl).height()) / 3);
+                }.bind(this));
+                this.timer = setTimeout(function() {
+                    if (((scrollTop > 0 && this.model.locked === false) || this.model.locked === true) && $(global).height() !== $(this.checkEl).height()) {
+                        this.model.locked = true;
+                    } else {
+                        this.model.locked = false;
+                    }
+                }.bind(this), 50);
+            }.bind(this);
+            viewport.callbacks.SCROLL.push(cb);
+            viewport.callbacks.RESIZE.push(cb);
+        }
+
 
     }
 
@@ -55,20 +71,65 @@ module.exports = Controller.extend({
 
 function onChangeLocked(model, locked) {
     if (locked) {
-        if (this.htmlEl.classList.contains('agency-pkg-fullscreen-locked')) {
-            $(this.scrollPreventerEl).scrollTop(0);
-            global.animationFrame.add(function() {
-                $(global).scrollTop(0);
-                console.log($(this.scrollPreventerEl).height() / 2, $(this.scrollPreventerEl).scrollTop());
-            });
-        } else {
+        if (hasNativeFullscreen()) {
             this.htmlEl.classList.add('agency-pkg-fullscreen-locked');
-            $(this.scrollPreventerEl).scrollTop(0);
-            global.animationFrame.add(function() {
-                $(global).scrollTop(0);
-            });
+        } else {
+            if (this.htmlEl.classList.contains('agency-pkg-fullscreen-locked')) {
+                $(this.scrollPreventerEl).scrollTop(0);
+                global.animationFrame.add(function() {
+                    $(global).scrollTop(0);
+                    console.log($(this.scrollPreventerEl).height() / 2, $(this.scrollPreventerEl).scrollTop());
+                });
+            } else {
+                this.htmlEl.classList.add('agency-pkg-fullscreen-locked');
+                $(this.scrollPreventerEl).scrollTop(0);
+                global.animationFrame.add(function() {
+                    $(global).scrollTop(0);
+                });
+            }
         }
     } else {
         this.htmlEl.classList.remove('agency-pkg-fullscreen-locked');
+    }
+}
+
+function onClickClue(e) {
+    if (hasNativeFullscreen()) {
+        e.preventDefault();
+        nativeFullscreen(this.contentEl, true);
+    }
+}
+
+function hasNativeFullscreen() {
+    return document.body.requestFullScreen ||
+        document.body.mozRequestFullScreen ||
+        document.body.webkitRequestFullScreen;
+}
+
+function nativeFullscreenEnabled() {
+    return document.fullscreen ||
+        document.mozFullScreen ||
+        document.webkitIsFullScreen;
+}
+
+function nativeFullscreen(el, fullscreen) {
+    if (el.requestFullScreen) {
+        if (fullscreen) {
+            el.requestFullscreen();
+        } else {
+            document.exitFullScreen();
+        }
+    } else if (el.mozRequestFullScreen) {
+        if (fullscreen) {
+            el.mozRequestFullScreen();
+        } else {
+            document.mozCancelFullScreen();
+        }
+    } else if (el.webkitRequestFullScreen) {
+        if (fullscreen) {
+            el.webkitRequestFullScreen();
+        } else {
+            document.webkitCancelFullScreen();
+        }
     }
 }

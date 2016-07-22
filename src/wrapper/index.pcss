@@ -32,6 +32,9 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     pointer-events: none;
+    .agency-pkg-fullscreen-native & {
+      pointer-events: auto;
+    }
     opacity: 1;
     .agency-pkg-fullscreen-locked & {
       opacity: 0;
@@ -48,6 +51,19 @@
       font-size: calc(20 / 16)rem;
       transform: translate(-50%, -50%);
       color: #fff;
+      display: block;
+
+      &.native {
+        display: none;
+      }
+      .agency-pkg-fullscreen-native & {
+        &.native {
+          display: block;
+        }
+        &.not-native {
+          display: none;
+        }
+      }
     }
   }
 }
