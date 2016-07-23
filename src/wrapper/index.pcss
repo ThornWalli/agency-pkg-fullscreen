@@ -16,14 +16,14 @@
     background: white;
   }
   .content {
-    &.locked {
-      /*overflow: hidden;*/
+    visibility: hidden;
+    height: 150vh;
+    overflow: hidden;
+    .agency-pkg-fullscreen-locked & {
+      overflow: auto;
     }
-    /*height: 100vh;*/
-    /*overflow-y: scroll;*/
-    /*overflow: hidden;*/
-    height: 200vh;
   }
+
 }
 html.agency-pkg-fullscreen-locked {
   &, body {
@@ -46,19 +46,21 @@ html.agency-pkg-fullscreen-locked {
         overflow: auto;
         height: 100vh;
         z-index: 5;
+        visibility: visible;
       }
     }
   }
 }
 html.agency-pkg-fullscreen-locked.agency-pkg-fullscreen-native {
   .scroll-preventer {
-  height: auto;
+    height: auto;
     .spacer {
       display: none;
     }
     .content {
       width: 100%;
       height: 100%;
+      overflow: auto;
     }
   }
 }

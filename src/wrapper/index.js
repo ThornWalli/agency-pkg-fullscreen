@@ -25,11 +25,16 @@ module.exports = Controller.extend({
     initialize: function() {
         Controller.prototype.initialize.apply(this, arguments);
 
+
+
+
         this.htmlEl = document.body.parentElement;
         this.contentEl = this.queryByHook('content');
         this.scrollPreventerEl = this.queryByHook('scroll-preventer');
         this.checkEl = this.queryByHook('check');
         this.spacerEl = this.queryByHook('spacer');
+
+        this.defaultHeight = this.checkEl[getSizePropertyNames(this.checkEl).height];
 
         this.model.on('change:locked', onChangeLocked.bind(this));
 
@@ -45,15 +50,17 @@ module.exports = Controller.extend({
 
         } else {
             cb = function() {
-                var scrollTop = $(window).scrollTop();
+                var scrollTop = global[getScrollPropertyNames(global).y];
+                console.log('getScrollPropertyNames(global).y', getScrollPropertyNames(global).y);
                 if (this.timer) {
                     global.clearTimeout(this.timer);
                 }
                 global.animationFrame.add(function() {
-                    $(this.scrollPreventerEl).scrollTop(($(this.spacerEl).height()) / 3);
+                    this.scrollPreventerEl[getScrollPropertyNames(this.scrollPreventerEl).y] = parseInt(this.spacerEl[getSizePropertyNames(this.spacerEl).height]) / 3;
                 }.bind(this));
                 this.timer = setTimeout(function() {
-                    if (((scrollTop > 0 && this.model.locked === false) || this.model.locked === true) && $(global).height() !== $(this.checkEl).height()) {
+                    console.log(scrollTop,global[getSizePropertyNames(global).height], this.checkEl[getSizePropertyNames(this.checkEl).height]);
+                    if (((scrollTop > 0 && this.model.locked === false) || this.model.locked === true) && global[getSizePropertyNames(global).height] !== this.defaultHeight) {
                         this.model.locked = true;
                     } else {
                         this.model.locked = false;
@@ -78,17 +85,15 @@ function onChangeLocked(model, locked) {
             }
         } else {
             if (this.htmlEl.classList.contains('agency-pkg-fullscreen-locked')) {
-                $(this.scrollPreventerEl).scrollTop(0);
                 global.animationFrame.add(function() {
-                    $(global).scrollTop(0);
-                    console.log($(this.scrollPreventerEl).height() / 2, $(this.scrollPreventerEl).scrollTop());
+                    global[getScrollPropertyNames(global).y] = 0;
                 });
             } else {
                 this.htmlEl.classList.add('agency-pkg-fullscreen-locked');
-                $(this.scrollPreventerEl).scrollTop(0);
                 global.animationFrame.add(function() {
-                    $(global).scrollTop(0);
-                });
+                    global[getScrollPropertyNames(global).y] = 0;
+                    this.contentEl[getScrollPropertyNames(this.contentEl).y] = 0;
+                }.bind(this));
             }
         }
     } else {
@@ -129,4 +134,34 @@ function nativeFullscreen(el, fullscreen) {
             document.webkitCancelFullScreen();
         }
     }
+}
+
+function getSizePropertyNames(el) {
+    var properties = {};
+    if ('innerWidth' in el) {
+        properties.width = 'innerWidth';
+        properties.height = 'innerHeight';
+    } else if ('offsetWidth' in el) {
+        properties.width = 'offsetWidth';
+        properties.height = 'offsetHeight';
+    } else {
+        properties.width = 'clientWidth';
+        properties.height = 'clientHeight';
+    }
+    return properties;
+}
+
+function getScrollPropertyNames(el) {
+    var properties = {};
+     if ('pageXOffset' in el) {
+        properties.x = 'pageXOffset';
+        properties.y = 'pageYOffset';
+    } else if ('scrollX' in el) {
+        properties.x = 'scrollX';
+        properties.y = 'scrollY';
+    } else{
+        properties.x = 'scrollLeft';
+        properties.y = 'scrollTop';
+    }
+    return properties;
 }
