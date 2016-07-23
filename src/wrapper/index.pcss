@@ -24,49 +24,6 @@
     /*overflow: hidden;*/
     height: 200vh;
   }
-  .clue {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    pointer-events: none;
-    .agency-pkg-fullscreen-native & {
-      pointer-events: auto;
-    }
-    opacity: 1;
-    .agency-pkg-fullscreen-locked & {
-      opacity: 0;
-    }
-    transition-property: opacity;
-    transition-duration: .35s;
-    transition-timing-function: ease;
-    span {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      text-align: center;
-      line-height: 2rem;
-      font-size: calc(20 / 16)rem;
-      transform: translate(-50%, -50%);
-      color: #fff;
-      &.swipe {
-        display: block;
-      }
-      &.native {
-        display: none;
-      }
-      .agency-pkg-fullscreen-native & {
-        &.native {
-          display: block;
-        }
-        &.swipe {
-          display: none;
-        }
-      }
-    }
-  }
 }
 html.agency-pkg-fullscreen-locked {
   &, body {
@@ -85,10 +42,23 @@ html.agency-pkg-fullscreen-locked {
         position: fixed;
         top: 0;
         left: 0;
-        overflow: scroll;
+        width: 100%;
+        overflow: auto;
         height: 100vh;
         z-index: 5;
       }
+    }
+  }
+}
+html.agency-pkg-fullscreen-locked.agency-pkg-fullscreen-native {
+  .scroll-preventer {
+  height: auto;
+    .spacer {
+      display: none;
+    }
+    .content {
+      width: 100%;
+      height: 100%;
     }
   }
 }

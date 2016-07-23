@@ -19,7 +19,7 @@ module.exports = Controller.extend({
         }
     }),
     events: {
-        'click .clue': onClickClue
+        // 'click .clue': onClickClue
     },
     timer: null,
     initialize: function() {
@@ -73,6 +73,9 @@ function onChangeLocked(model, locked) {
     if (locked) {
         if (hasNativeFullscreen()) {
             this.htmlEl.classList.add('agency-pkg-fullscreen-locked');
+            if (hasNativeFullscreen()) {
+                nativeFullscreen(this.contentEl, true);
+            }
         } else {
             if (this.htmlEl.classList.contains('agency-pkg-fullscreen-locked')) {
                 $(this.scrollPreventerEl).scrollTop(0);
@@ -93,12 +96,6 @@ function onChangeLocked(model, locked) {
     }
 }
 
-function onClickClue(e) {
-    if (hasNativeFullscreen()) {
-        e.preventDefault();
-        nativeFullscreen(this.contentEl, true);
-    }
-}
 
 function hasNativeFullscreen() {
     return document.body.requestFullScreen ||
