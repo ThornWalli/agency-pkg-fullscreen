@@ -27,9 +27,7 @@ module.exports = Controller.extend({
             }
         }.bind(this);
         this.model.on('change:locked', function(model, locked) {
-            if (!locked) {
                 this.core.setLocked(locked);
-            }
         }.bind(this));
     }
 

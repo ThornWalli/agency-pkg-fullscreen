@@ -10,7 +10,7 @@ var Core = function(el) {
 
     this.el = el;
     el.classList.add('agency-pkg-fullscreen-core');
-    
+
     this.contentEl = el.querySelector('[data-hook="content"]');
     this.scrollPreventerEl = el.querySelector('[data-hook="scroll-preventer"]');
     this.htmlEl = document.body.parentElement;
@@ -57,7 +57,6 @@ Core.prototype.setLocked = function(locked) {
         this.locked = locked;
         onAfterChange.bind(this)(locked);
     }
-
 };
 
 function generateHelpers(scope) {
@@ -107,7 +106,5 @@ function onAfterChange(locked) {
         this.onAfterChange.bind(this)(locked);
     }
 }
-
-
 
 module.exports = Core;
