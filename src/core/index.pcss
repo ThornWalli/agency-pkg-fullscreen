@@ -1,0 +1,65 @@
+.agency-pkg-fullscreen-core {
+  position: relative;
+  [data-hook="check"] {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  [data-hook="content"] {
+    visibility: hidden;
+    height: 150vh;
+    overflow: hidden;
+    .agency-pkg-fullscreen-locked & {
+      overflow: auto;
+    }
+  }
+  .agency-pkg-fullscreen-native & {
+    [data-hook="content"] {
+      visibility: hidden;
+      height: auto;
+      overflow: hidden;
+      height: 100vh;
+      .agency-pkg-fullscreen-locked & {
+        overflow: auto;
+      }
+    }
+  }
+  .agency-pkg-fullscreen-locked & {
+    [data-hook="scroll-preventer"] {
+      height: 100vh;
+      overflow: scroll;
+      [data-hook="spacer"] {
+        display: block;
+        width: 100%;
+        height: 300vh;
+      }
+    }
+    [data-hook="content"] {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: auto;
+      height: 100vh;
+      z-index: 5;
+      visibility: visible;
+    }
+  }
+  .agency-pkg-fullscreen-locked.agency-pkg-fullscreen-native & {
+    [data-hook="scroll-preventer"] {
+      height: auto;
+      [data-hook="spacer"] {
+        display: none;
+      }
+    }
+    [data-hook="content"] {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+  }
+}

@@ -1,6 +1,5 @@
 $clue_background_color: #333;
 .pkg[data-pkg="agency-pkg-fullscreen/clue"] {
-
   position: fixed;
   top: 0;
   left: 0;
@@ -18,8 +17,13 @@ $clue_background_color: #333;
   transition-property: opacity;
   transition-duration: .75s;
   transition-timing-function: ease;
-  
+  &[init] {
+    span {
+      visibility: visible;
+    }
+  }
   span {
+    visibility: hidden;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -46,7 +50,6 @@ $clue_background_color: #333;
       }
     }
   }
-
   svg {
     color: #ffffff;
     * {
@@ -59,15 +62,11 @@ $clue_background_color: #333;
     max-width: 100%;
     width: 40%;
     margin: 2rem auto;
-
     display: block;
-
-
   }
 }
 html:not(.agency-pkg-fullscreen-locked) {
   &, body {
-
     height: 100%;
   }
   body {
