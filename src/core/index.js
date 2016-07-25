@@ -14,7 +14,7 @@ var Core = function(el) {
     this.contentEl = el.querySelector('[data-hook="content"]');
     this.scrollPreventerEl = el.querySelector('[data-hook="scroll-preventer"]');
     this.htmlEl = document.body.parentElement;
-    console.log(this);
+
     generateHelpers(this);
 
     this.defaultHeight = this.checkEl[utils.getSizePropertyNames(this.checkEl).height];
@@ -101,7 +101,6 @@ function onAfterChange(locked) {
     } else {
         this.htmlEl.classList.remove('agency-pkg-fullscreen-locked');
     }
-
     if (typeof this.onAfterChange === 'function') {
         this.onAfterChange.bind(this)(locked);
     }
