@@ -8,12 +8,21 @@ var Core = function(el) {
     this.locked = false;
     this.timer = null;
 
+    this.isTouching = false;
+
     this.el = el;
     el.classList.add('agency-pkg-fullscreen-core');
 
     this.contentEl = el.querySelector('[data-hook="content"]');
     this.scrollPreventerEl = el.querySelector('[data-hook="scroll-preventer"]');
     this.htmlEl = document.body.parentElement;
+
+    el.addEventListener('touchstart', function() {
+        this.isTouching = true;
+    }.bind(this));
+    el.addEventListener('touchend', function() {
+        this.isTouching = false;
+    }.bind(this));
 
     generateHelpers(this);
 
@@ -28,26 +37,37 @@ var Core = function(el) {
             });
         });
     } else {
-        var cb = function() {
-            var scrollTop = global[utils.getScrollPropertyNames(global).y];
-            if (scope.timer) {
-                global.clearTimeout(scope.timer);
-            }
-            global.animationFrame.add(function() {
-                scope.scrollPreventerEl[utils.getScrollPropertyNames(scope.scrollPreventerEl).y] = parseInt(scope.spacerEl[utils.getSizePropertyNames(scope.spacerEl).height]) / 3;
-            });
-            scope.timer = setTimeout(function() {
-                if (((scrollTop > 0 && scope.locked === false) || scope.locked === true) && global[utils.getSizePropertyNames(global).height] !== scope.defaultHeight) {
-                    scope.setLocked(true);
-                } else {
-                    scope.setLocked(false);
-                }
-            }, 150);
-        };
-        viewport.callbacks.SCROLL.push(cb);
-        viewport.callbacks.RESIZE.push(cb);
+        viewport.callbacks.SCROLL.push(onScroll.bind(this));
+        viewport.callbacks.RESIZE.push(onResize.bind(this));
     }
 };
+
+function onScroll() {
+    var scope = this;
+    var scrollTop = global[utils.getScrollPropertyNames(global).y];
+    if (scope.timer) {
+        global.clearTimeout(scope.timer);
+    }
+    global.animationFrame.add(function() {
+        scope.scrollPreventerEl[utils.getScrollPropertyNames(scope.scrollPreventerEl).y] = parseInt(scope.spacerEl[utils.getSizePropertyNames(scope.spacerEl).height]) / 3;
+    });
+    scope.timer = setTimeout(function() {
+        if (!scope.isTouching) {
+            if (((scrollTop > 0 && scope.locked === false) || scope.locked === true) && global[utils.getSizePropertyNames(global).height] !== scope.defaultHeight) {
+                scope.setLocked(true);
+            } else {
+                scope.setLocked(false);
+            }
+        }
+    }, 150);
+}
+
+function onResize() {
+    if (this.locked === true && global[utils.getSizePropertyNames(global).height] === this.defaultHeight) {
+        this.setLocked(false);
+    }
+}
+
 Core.prototype.fullScreenChangeEvents = ['webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange', 'MSFullscreenChange'];
 Core.prototype.onBeforeChange = function() {};
 Core.prototype.onAfterChange = function() {};
